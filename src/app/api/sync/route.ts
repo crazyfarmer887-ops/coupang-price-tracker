@@ -25,7 +25,7 @@ export async function GET() {
     const html = await response.text();
     const $ = cheerio.load(html);
     
-    const products = [];
+    const products: any[] = [];
     
     // Parse product items from the page
     $('a[href^="/"]').each((_, el) => {
@@ -63,12 +63,12 @@ export async function GET() {
     });
     
     // Deduplicate by ID
-    const uniqueProducts = products.reduce((acc, product) => {
-      if (!acc.find(p => p.id === product.id)) {
+    const uniqueProducts = products.reduce<any[]>((acc, product) => {
+      if (!acc.find((p: any) => p.id === product.id)) {
         acc.push(product);
       }
       return acc;
-    }, [] as typeof products);
+    }, []);
     
     // Save to Redis with timestamp
     const timestamp = new Date().toISOString();
