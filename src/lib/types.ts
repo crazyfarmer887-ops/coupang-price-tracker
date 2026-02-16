@@ -11,7 +11,7 @@ export interface Product {
   isLowest: boolean;
   isRocket: boolean;
   category: string;
-  partnerLink: string;
+  coupangUrl: string;
   lastUpdated: string;
 }
 

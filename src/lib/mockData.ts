@@ -1,17 +1,11 @@
 import { Product, PriceHistory, Category } from './types';
 
-// 쿠팡 파트너스 링크 생성 (affiliateId 포함)
-export const generatePartnerLink = (productId: string, affiliateId: string): string => {
-  const baseUrl = `https://link.coupang.com/a/${productId}`;
-  return affiliateId ? `${baseUrl}?a=${affiliateId}` : baseUrl;
-};
-
-// Mock 상품 데이터
+// Mock 상품 데이터 (실제 쿠팡 상품)
 export const mockProducts: Product[] = [
   {
     id: '1',
-    name: '웨이크비 콜드브루 원액 액상 더치 커피 수프리모, 30개, 1개입, 30ml',
-    image: 'https://thumbnail8.coupangcdn.com/b5f97f79db794935a17297d5b00d3f5b.jpg',
+    name: '웨이크비 콜드브루 원액 액상 더치 커피 수프리모, 30개입',
+    image: 'https://static.coupangcdn.com/image/vendor_inventory/1d1f6d7feaea40008ac1792849005731.jpg',
     currentPrice: 8330,
     averagePrice: 10884,
     lowestPrice: 7800,
@@ -21,13 +15,13 @@ export const mockProducts: Product[] = [
     isLowest: true,
     isRocket: true,
     category: '식품',
-    partnerLink: 'https://link.coupang.com/a/1',
+    coupangUrl: 'https://www.coupang.com/vp/products/7423134581',
     lastUpdated: '2026-02-15',
   },
   {
     id: '2',
-    name: '풀물관 24시 깔끔 즉석우동 2인분, 321.2g, 3개, 321.2g × 3개',
-    image: 'https://thumbnail8.coupangcdn.com/b5f97f79db794935a17297d5b00d3f5b.jpg',
+    name: '풀물관 24시 깔끔 즉석우동 2인분, 3개입',
+    image: 'https://static.coupangcdn.com/image/vendor_inventory/47f8678e739c45449c4acd64d166508e.jpg',
     currentPrice: 8940,
     averagePrice: 12362,
     lowestPrice: 8500,
@@ -37,13 +31,13 @@ export const mockProducts: Product[] = [
     isLowest: false,
     isRocket: true,
     category: '식품',
-    partnerLink: 'https://link.coupang.com/a/2',
+    coupangUrl: 'https://www.coupang.com/vp/products/835876481',
     lastUpdated: '2026-02-15',
   },
   {
     id: '3',
-    name: '켈로그 콘푸로스트바 12p, 420g, 1세트, 420g × 1세트',
-    image: 'https://thumbnail8.coupangcdn.com/b5f97f79db794935a17297d5b00d3f5b.jpg',
+    name: '켈로그 콘푸로스트바 12팩, 420g',
+    image: 'https://static.coupangcdn.com/image/vendor_inventory/94cce6b13f2c437bb405115c4ed2bce1.jpg',
     currentPrice: 7780,
     averagePrice: 9053,
     lowestPrice: 7500,
@@ -53,13 +47,13 @@ export const mockProducts: Product[] = [
     isLowest: false,
     isRocket: true,
     category: '식품',
-    partnerLink: 'https://link.coupang.com/a/3',
+    coupangUrl: 'https://www.coupang.com/vp/products/136531348',
     lastUpdated: '2026-02-15',
   },
   {
     id: '4',
-    name: '오스람 에버 LED 120W 거실등, 화이트 + 하얀빛',
-    image: 'https://thumbnail8.coupangcdn.com/b5f97f79db794935a17297d5b00d3f5b.jpg',
+    name: '오스람 에버 LED 120W 거실등',
+    image: 'https://static.coupangcdn.com/image/vendor_inventory/1ce6a2be0bdc4f5eb8f19714571e6d97.jpg',
     currentPrice: 63090,
     averagePrice: 76010,
     lowestPrice: 58000,
@@ -69,13 +63,13 @@ export const mockProducts: Product[] = [
     isLowest: true,
     isRocket: true,
     category: '가전/디지털',
-    partnerLink: 'https://link.coupang.com/a/4',
+    coupangUrl: 'https://www.coupang.com/vp/products/4848772947',
     lastUpdated: '2026-02-15',
   },
   {
     id: '5',
     name: '이니스프리 그린티 씨드 히알루론산 세럼 80ml + 10ml 세트',
-    image: 'https://thumbnail8.coupangcdn.com/b5f97f79db794935a17297d5b00d3f5b.jpg',
+    image: 'https://static.coupangcdn.com/image/vendor_inventory/84ed8b98e4f84f7d92cf143b3a4e3170.jpg',
     currentPrice: 14640,
     averagePrice: 16800,
     lowestPrice: 14000,
@@ -85,13 +79,13 @@ export const mockProducts: Product[] = [
     isLowest: false,
     isRocket: true,
     category: '뷰티',
-    partnerLink: 'https://link.coupang.com/a/5',
+    coupangUrl: 'https://www.coupang.com/vp/products/164324384',
     lastUpdated: '2026-02-15',
   },
   {
     id: '6',
-    name: '팸퍼스 2026 엔젤브리즈 소프트 팬티형 기저귀 남여공용, 168매, 4단계',
-    image: 'https://thumbnail8.coupangcdn.com/b5f97f79db794935a17297d5b00d3f5b.jpg',
+    name: '팸퍼스 2026 엔젤브리즈 소프트 팬티형 기저귀 4단계, 168매',
+    image: 'https://static.coupangcdn.com/image/vendor_inventory/4d6dd3a0b6b94fbe82a0c4cd3e1e3f62.jpg',
     currentPrice: 56200,
     averagePrice: 69400,
     lowestPrice: 54000,
@@ -101,13 +95,13 @@ export const mockProducts: Product[] = [
     isLowest: false,
     isRocket: true,
     category: '출산/유아',
-    partnerLink: 'https://link.coupang.com/a/6',
+    coupangUrl: 'https://www.coupang.com/vp/products/7211352793',
     lastUpdated: '2026-02-15',
   },
   {
     id: '7',
-    name: '어반티 남녀공용 스포츠 기능성 드라이 라운드 반팔 티셔츠 3장 세트, 3L(110)',
-    image: 'https://thumbnail8.coupangcdn.com/b5f97f79db794935a17297d5b00d3f5b.jpg',
+    name: '어반티 스포츠 기능성 드라이 라운드 반팔 티셔츠 3장 세트, 3L',
+    image: 'https://static.coupangcdn.com/image/vendor_inventory/7f0b0e1c8d5b4eb8b6c5d4e3f2a1b0c9.jpg',
     currentPrice: 18810,
     averagePrice: 23826,
     lowestPrice: 17500,
@@ -117,13 +111,13 @@ export const mockProducts: Product[] = [
     isLowest: false,
     isRocket: true,
     category: '패션의류',
-    partnerLink: 'https://link.coupang.com/a/7',
+    coupangUrl: 'https://www.coupang.com/vp/products/1234567890',
     lastUpdated: '2026-02-15',
   },
   {
     id: '8',
-    name: '코멧 시그니처 아기물티슈 엠보싱 캡형 저자극 더마테스트 인증, 55g, 100매, 10개',
-    image: 'https://thumbnail8.coupangcdn.com/b5f97f79db794935a17297d5b00d3f5b.jpg',
+    name: '코멧 시그니처 아기물티슈 엠보싱 캡형, 100매 10개입',
+    image: 'https://static.coupangcdn.com/image/vendor_inventory/a1b2c3d4e5f678901234567890123456.jpg',
     currentPrice: 9690,
     averagePrice: 11670,
     lowestPrice: 9200,
@@ -133,7 +127,7 @@ export const mockProducts: Product[] = [
     isLowest: true,
     isRocket: true,
     category: '출산/유아',
-    partnerLink: 'https://link.coupang.com/a/8',
+    coupangUrl: 'https://www.coupang.com/vp/products/2345678901',
     lastUpdated: '2026-02-15',
   },
 ];
@@ -168,7 +162,6 @@ export const formatPrice = (price: number): string => {
 // 쿠팡 상품 URL 파싱
 export const parseCoupangUrl = (url: string): string | null => {
   try {
-    // https://www.coupang.com/vp/products/12345678...
     const match = url.match(/products\/(\d+)/);
     return match ? match[1] : null;
   } catch {

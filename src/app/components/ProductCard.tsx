@@ -1,20 +1,17 @@
 'use client';
 
-import { useState } from 'react';
-import { Search, Settings, Star, ExternalLink, TrendingDown, Rocket } from 'lucide-react';
+import { Star, TrendingDown, Rocket, ExternalLink } from 'lucide-react';
 import { Product } from '@/lib/types';
 import { useStore } from '@/lib/store';
-import { formatPrice, generatePartnerLink } from '@/lib/mockData';
+import { formatPrice } from '@/lib/mockData';
 
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const { affiliateId, watchedProducts, addWatchedProduct, removeWatchedProduct } = useStore();
+  const { watchedProducts, addWatchedProduct, removeWatchedProduct } = useStore();
   const isWatched = watchedProducts.some(p => p.id === product.id);
-  
-  const partnerLink = generatePartnerLink(product.id, affiliateId);
   
   const handleWatchToggle = () => {
     if (isWatched) {
@@ -66,7 +63,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Content */}
       <div className="p-4">
         {/* Title */}
-        <h3 className="font-medium text-sm line-clamp-2 mb-3 h-10">
+        <h3 className="font-medium text-sm line-clamp-2 mb-3 min-h-[2.5rem]">
           {product.name}
         </h3>
         
@@ -99,7 +96,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Actions */}
         <div className="flex gap-2">
           <a
-            href={partnerLink}
+            href={product.coupangUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="flex-1 bg-primary text-white text-center py-2.5 rounded-lg font-medium hover:bg-[#ff8577] transition-colors flex items-center justify-center gap-2"

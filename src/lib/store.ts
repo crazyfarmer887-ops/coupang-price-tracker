@@ -15,10 +15,6 @@ interface AppState {
   removeWatchedProduct: (productId: string) => void;
   setSelectedCategory: (category: Category) => void;
   setSearchQuery: (query: string) => void;
-  
-  // Affiliate
-  affiliateId: string;
-  setAffiliateId: (id: string) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -29,7 +25,6 @@ export const useStore = create<AppState>()(
       watchedProducts: [],
       selectedCategory: '전체',
       searchQuery: '',
-      affiliateId: '',
 
       // Actions
       setProducts: (products) => set({ products }),
@@ -48,7 +43,6 @@ export const useStore = create<AppState>()(
       
       setSelectedCategory: (category) => set({ selectedCategory: category }),
       setSearchQuery: (query) => set({ searchQuery: query }),
-      setAffiliateId: (id) => set({ affiliateId: id }),
     }),
     {
       name: 'coupang-price-tracker',
