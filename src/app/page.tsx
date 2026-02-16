@@ -21,12 +21,23 @@ export default function Home() {
   
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
-  // Initialize with mock data
+  // Fetch products from API
   useEffect(() => {
-    if (products.length === 0) {
-      setProducts(mockProducts);
+    async function fetchProducts() {
+      try {
+        const res = await fetch('/api/products');
+        const data = await res.json();
+        if (data.products && data.products.length > 0) {
+          setProducts(data.products);
+        } else {
+          setProducts(mockProducts);
+        }
+      } catch {
+        setProducts(mockProducts);
+      }
     }
-  }, [products.length, setProducts]);
+    fetchProducts();
+  }, [setProducts]);
 
   // Filter products
   useEffect(() => {

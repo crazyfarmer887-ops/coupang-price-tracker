@@ -1,85 +1,57 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { Redis } from '@upstash/redis';
-import { Product } from '@/lib/types';
+'use strict';
 
-// Upstash Redis setup (free tier: 10k commands/day)
+import { Redis } from '@upstash/redis';
+
 const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL || '',
-  token: process.env.UPSTASH_REDIS_REST_TOKEN || '',
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });
 
-const PRODUCTS_KEY = 'coupang:products';
+export const dynamic = 'force-dynamic';
 
-// Get all products
 export async function GET() {
   try {
-    const products = await redis.get<Product[]>(PRODUCTS_KEY);
-    return NextResponse.json(products || []);
+    const [productsJson, lastUpdate] = await Promise.all([
+      redis.get('lowchart:products'),
+      redis.get('lowchart:lastUpdate'),
+    ]);
+    
+    if (!productsJson) {
+      return Response.json({
+        products: [],
+        lastUpdate: null,
+      });
+    }
+    
+    const products = JSON.parse(productsJson as string);
+    
+    // Transform to match Product type
+    const transformedProducts = products.map((p: any) => ({
+      id: p.id,
+      name: p.name,
+      image: `https://via.placeholder.com/200x200?text=${encodeURIComponent(p.name.substring(0, 10))}`,
+      currentPrice: p.currentPrice,
+      averagePrice: Math.floor(p.currentPrice / (1 - (p.discountRate / 100))),
+      lowestPrice: p.currentPrice,
+      highestPrice: Math.floor(p.currentPrice / (1 - (p.discountRate / 100))),
+      discountRate: p.discountRate,
+      changeRate: -p.discountRate,
+      isLowest: true,
+      isRocket: true,
+      category: '전체',
+      coupangUrl: p.coupangUrl || `https://www.coupang.com/vp/product/show?productId=${p.id}`,
+      lastUpdated: p.lastUpdated,
+    }));
+    
+    return Response.json({
+      products: transformedProducts,
+      lastUpdate,
+    });
   } catch (error) {
     console.error('Error fetching products:', error);
-    return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
-  }
-}
-
-// Add/update product(s)
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const productList = Array.isArray(body) ? body : [body];
-    
-    // Get existing products
-    const products = await redis.get<Product[]>(PRODUCTS_KEY) || [];
-    
-    for (const product of productList) {
-      if (!product.id) continue;
-      
-      // Check if product exists
-      const existingIndex = products.findIndex(p => p.id === product.id);
-      
-      if (existingIndex >= 0) {
-        // Update existing
-        products[existingIndex] = {
-          ...products[existingIndex],
-          ...product,
-          updatedAt: new Date().toISOString(),
-        };
-      } else {
-        // Add new
-        products.push({
-          ...product,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        });
-      }
-    }
-    
-    await redis.set(PRODUCTS_KEY, products);
-    
-    return NextResponse.json({ success: true, count: products.length });
-  } catch (error) {
-    console.error('Error saving product:', error);
-    return NextResponse.json({ error: 'Failed to save product' }, { status: 500 });
-  }
-}
-
-// Delete product
-export async function DELETE(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const productId = searchParams.get('id');
-    
-    if (!productId) {
-      return NextResponse.json({ error: 'Product ID required' }, { status: 400 });
-    }
-    
-    const products = await redis.get<Product[]>(PRODUCTS_KEY) || [];
-    const filtered = products.filter(p => p.id !== productId);
-    
-    await redis.set(PRODUCTS_KEY, filtered);
-    
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Error deleting product:', error);
-    return NextResponse.json({ error: 'Failed to delete product' }, { status: 500 });
+    return Response.json({
+      products: [],
+      error: error instanceof Error ? error.message : 'Unknown error',
+    }, { status: 500 });
   }
 }
