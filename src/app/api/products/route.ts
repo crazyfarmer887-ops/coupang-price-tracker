@@ -21,31 +21,36 @@ export async function GET() {
   }
 }
 
-// Add/update product
+// Add/update product(s)
 export async function POST(request: NextRequest) {
   try {
-    const product = await request.json();
+    const body = await request.json();
+    const productList = Array.isArray(body) ? body : [body];
     
     // Get existing products
     const products = await redis.get<Product[]>(PRODUCTS_KEY) || [];
     
-    // Check if product exists
-    const existingIndex = products.findIndex(p => p.id === product.id);
-    
-    if (existingIndex >= 0) {
-      // Update existing
-      products[existingIndex] = {
-        ...products[existingIndex],
-        ...product,
-        updatedAt: new Date().toISOString(),
-      };
-    } else {
-      // Add new
-      products.push({
-        ...product,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      });
+    for (const product of productList) {
+      if (!product.id) continue;
+      
+      // Check if product exists
+      const existingIndex = products.findIndex(p => p.id === product.id);
+      
+      if (existingIndex >= 0) {
+        // Update existing
+        products[existingIndex] = {
+          ...products[existingIndex],
+          ...product,
+          updatedAt: new Date().toISOString(),
+        };
+      } else {
+        // Add new
+        products.push({
+          ...product,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        });
+      }
     }
     
     await redis.set(PRODUCTS_KEY, products);
